@@ -1,23 +1,4 @@
-function isNearly (reference: number, reading: number, tolerance: number) {
-    if (reading >= reference - tolerance && reading <= reference + tolerance) {
-        return true
-    } else {
-        return false
-    }
-}
-function playMusic (genre: string) {
-    if (genre == "Level") {
-        if (playlistLevel.length == 0) {
-            playlistLevel = shuffleList(mbLevel)
-        }
-        theSound = playlistLevel.shift()
-    } else {
-    	
-    }
-    relativeVolumeB = parseFloat(theSound.split("_")[2]) / 100
-    basic.pause(Math.min(0, notLegos.playsFor(theSound, potRead(), notLegos.DigitalRJPin.J4)))
-}
-function PlaySound (category: string) {
+function playSound (category: string) {
     if (category == "Name") {
         if (playlistName.length == 0) {
             playlistName = shuffleList(sbName)
@@ -79,30 +60,53 @@ function PlaySound (category: string) {
         }
         theSound = playlistIncorrect.shift()
     }
-    relativeVolumeA = parseFloat(theSound.split("_")[2]) / 100 / 100
+    relativeVolumeA = parseFloat(theSound.split("_")[2]) / 100
     Connected.showUserText(1, theSound)
     basic.pause(notLegos.playsFor(theSound, potRead(), notLegos.DigitalRJPin.J3))
 }
-function printArray (toPrint: any[]) {
-    lineCount = toPrint.length
-    Connected.oledClear()
-    Connected.showUserNumber(8, lineCount)
-    if (lineCount > 0) {
-        for (let thisLine = 0; thisLine <= lineCount - 1; thisLine++) {
-            Connected.showUserText(thisLine + 1, toPrint[thisLine])
-        }
+function isNearly (reference: number, reading: number, tolerance: number) {
+    if (reading >= reference - tolerance && reading <= reference + tolerance) {
+        return true
     } else {
-        Connected.showUserText(1, "[Empty]")
+        return false
     }
 }
-Connected.buttonEvent(Connected.DigitalRJPin.J2, Connected.ButtonStateList.D, function () {
-    if (songNumber > 0) {
-        songNumber = songNumber - 1
+function playMusic (genre: string) {
+    if (genre == "Tutorial") {
+        if (playlistTutorial.length == 0) {
+            playlistTutorial = shuffleList(mbTutorial)
+        }
+        theSound = playlistTutorial.shift()
+    } else if (genre == "Intro") {
+        if (playlistIntro.length == 0) {
+            playlistIntro = shuffleList(mbIntro)
+        }
+        theSound = playlistIntro.shift()
+    } else if (genre == "Awaiting") {
+        if (playlistAwaiting.length == 0) {
+            playlistAwaiting = shuffleList(mbAwaiting)
+        }
+        theSound = playlistAwaiting.shift()
+    } else if (genre == "Level") {
+        if (playlistLevel.length == 0) {
+            playlistLevel = shuffleList(mbLevel)
+        }
+        theSound = playlistLevel.shift()
+    } else if (genre == "Won") {
+        if (playlistWonMusic.length == 0) {
+            playlistWonMusic = shuffleList(mbWon)
+        }
+        theSound = playlistWonMusic.shift()
+    } else if (genre == "Lost") {
+        let playlistLostMusic: number[] = []
+        if (playlistLostMusic.length == 0) {
+            playlistLost = shuffleList(mbLost)
+        }
+        theSound = playlistLost.shift()
     }
-    Connected.showUserText(2, mbLevel[songNumber])
-    basic.pause(notLegos.playsFor("", potRead(), notLegos.DigitalRJPin.J4) + 300)
-    Connected.showUserNumber(3, notLegos.playsFor("", potRead(), notLegos.DigitalRJPin.J4))
-})
+    relativeVolumeB = parseFloat(theSound.split("_")[2]) / 100
+    basic.pause(Math.min(0, notLegos.playsFor(theSound, potRead(), notLegos.DigitalRJPin.J4)))
+}
 function potRead () {
     thePotSays = pins.map(
     Connected.trimpot(Connected.AnalogRJPin.J1),
@@ -112,6 +116,20 @@ function potRead () {
     1
     )
     return thePotSays
+}
+function playSFX (track: number) {
+    thisTrack = 0
+    thisString = ""
+    for (let value of sbDoom) {
+        thisTrack = parseFloat(value.split("_")[1])
+        if (thisTrack == track) {
+            thisString = value
+            break;
+        }
+    }
+    relativeVolumeA = parseFloat(thisString.split("_")[2]) / 100
+    Connected.showUserText(1, thisString)
+    basic.pause(notLegos.playsFor(thisString, potRead(), notLegos.DigitalRJPin.J3))
 }
 function shuffleList (listIn: string[]) {
     listCopy = []
@@ -169,12 +187,20 @@ function setSounds (player: string) {
         }
     }
 }
-Connected.buttonEvent(Connected.DigitalRJPin.J2, Connected.ButtonStateList.C, function () {
-    songNumber = songNumber + 1
-    Connected.showUserText(2, mbLevel[songNumber])
-    basic.pause(notLegos.playsFor("", potRead(), notLegos.DigitalRJPin.J4) + 300)
-    Connected.showUserNumber(3, notLegos.playsFor("", potRead(), notLegos.DigitalRJPin.J4))
-})
+function playVoice (track: number) {
+    thisTrack = 0
+    thisString = ""
+    for (let value of sbVoices) {
+        thisTrack = parseFloat(value.split("_")[1])
+        if (thisTrack == track) {
+            thisString = value
+            break;
+        }
+    }
+    relativeVolumeA = parseFloat(thisString.split("_")[2]) / 100
+    Connected.showUserText(1, thisString)
+    basic.pause(notLegos.playsFor(thisString, potRead(), notLegos.DigitalRJPin.J3))
+}
 function setMusic (player: string) {
     musicString = notLegos.playerMusicString("Mario")
     mbTutorial = []
@@ -219,14 +245,8 @@ function setMusic (player: string) {
 }
 let thisRead = 0
 let sbSFX: string[] = []
-let sbDoom: string[] = []
-let mbLost: string[] = []
-let mbWon: string[] = []
-let mbAwaiting: string[] = []
-let sbVoices: string[] = []
-let mbIntro: string[] = []
-let mbTutorial: string[] = []
 let musicString = ""
+let sbVoices: string[] = []
 let thisLetter = ""
 let stringParts: string[] = []
 let sbIntro: string[] = []
@@ -234,8 +254,20 @@ let soundString = ""
 let thisItem = ""
 let listOut: string[] = []
 let listCopy: string[] = []
+let sbDoom: string[] = []
+let thisString = ""
+let thisTrack = 0
 let thePotSays = 0
-let lineCount = 0
+let mbLost: string[] = []
+let mbWon: string[] = []
+let playlistWonMusic: string[] = []
+let mbLevel: string[] = []
+let mbAwaiting: string[] = []
+let playlistAwaiting: string[] = []
+let mbIntro: string[] = []
+let playlistIntro: string[] = []
+let mbTutorial: string[] = []
+let playlistTutorial: string[] = []
 let sbIncorrect: string[] = []
 let playlistIncorrect: string[] = []
 let sbCorrect: string[] = []
@@ -258,12 +290,10 @@ let sbYay: string[] = []
 let playlistYay: string[] = []
 let sbReady: string[] = []
 let playlistReady: string[] = []
+let theSound = ""
 let sbName: string[] = []
 let playlistName: string[] = []
-let theSound = ""
-let mbLevel: string[] = []
 let playlistLevel: string[] = []
-let songNumber = 0
 let relativeVolumeB = 0
 let relativeVolumeA = 0
 Connected.MP3SetPort(Connected.DigitalRJPin.J3)
@@ -272,14 +302,17 @@ Connected.MP3SetPort(Connected.DigitalRJPin.J4)
 Connected.execute(Connected.playType.Stop)
 relativeVolumeA = 0
 relativeVolumeB = 0
-songNumber = -1
+let songNumber = -1
 let volumeA = -1
 let volumeB = -1
 playlistLevel = []
 setSounds("Mario")
 setMusic("Mario")
 let lastRead = potRead()
-playMusic("Level")
+playSound("Incorrect")
+playVoice(40)
+playSFX(30)
+playMusic("Lost")
 loops.everyInterval(100, function () {
     thisRead = potRead()
     if (!(isNearly(thisRead, lastRead, 0.01))) {
