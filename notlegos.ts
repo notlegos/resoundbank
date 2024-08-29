@@ -1,9 +1,336 @@
 // NotLegos Blocks
 
 //% block="Not LEGOs" color=#0031AF weight=1000 icon="\uf6ec"
-//% groups=['Display', 'Laser', 'others']
+//% groups=['Audio",'Display', 'Laser', 'others']
 namespace notLegos {
 
+    let mbAwaiting: string[] = []
+    let mbIntro: string[] = []
+    let mbLevel: string[] = []
+    let mbLost: string[] = []
+    let mbTutorial: string[] = []
+    let mbWon: string[] = []
+    let playlistAwaiting: string[] = []
+    let playlistCorrect: string[] = []
+    let playlistFailure: string[] = []
+    let playlistHurry: string[] = []
+    let playlistIncorrect: string[] = []
+    let playlistIntro: string[] = []
+    let playlistLevel: string[] = []
+    let playlistLost: string[] = []
+    let playlistName: string[] = []
+    let playlistNay: string[] = []
+    let playlistOuch: string[] = []
+    let playlistSuccess: string[] = []
+    let playlistReady: string[] = []
+    let playlistTutorial: string[] = []
+    let playlistWon: string[] = []
+    let playlistWonMusic: string[] = []
+    let playlistYay: string[] = []
+    let sbCorrect: string[] = []
+    let sbDoom: string[] = []
+    let sbFailure: string[] = []
+    let sbHurry: string[] = []
+    let sbIncorrect: string[] = []
+    let sbIntro: string[] = []
+    let sbLost: string[] = []
+    let sbName: string[] = []
+    let sbNay: string[] = []
+    let sbOuch: string[] = []
+    let sbReady: string[] = []
+    let sbSFX: string[] = []
+    let sbSuccess: string[] = []
+    let sbVoices: string[] = []
+    let sbWon: string[] = []
+    let sbYay: string[] = []
+    let stringParts: string[] = []
+    let thePlayer = "default"
+    let theSound=""
+    let soundString=""
+    let thisLetter=""
+    let musicString=""
+
+    /*
+      * Get a SFX
+      */
+    //% blockId=nl_sfx_get
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Fetch SFX track $track"
+    export function playSFX(track: number) {
+        let thisTrack = 0
+        let thisString = ""
+        for (let value of sbDoom) {
+            thisTrack = parseFloat(value.split("_")[1])
+            if (thisTrack == track) {
+                thisString = value
+                break;
+            }
+        }
+        return thisString
+    }
+
+
+    function shuffleList(listIn: string[]) {
+        let listCopy = []
+        for (let value2 of listIn) {
+            listCopy.push(value2)
+        }
+        let listOut = ["temp"]
+        while (listCopy.length > 0) {
+            let thisItem = listCopy._pickRandom()
+            listOut.push(thisItem)
+            listCopy.removeAt(listCopy.indexOf(thisItem))
+        }
+        listOut.shift()
+        return listOut
+    }
+
+    /*
+    * Get a Voice
+    */
+    //% blockId=nl_voice_get
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Fetch Voice track $track"
+    export function playVoice(track: number) {
+        let thisString = ""
+        for (let value3 of sbVoices) {
+            let thisTrack = parseFloat(value3.split("_")[1])
+            if (thisTrack == track) {
+                thisString = value3
+                break;
+            }
+        }
+        return thisString
+    }
+
+    /*
+      * Set the Player
+      */
+    //% blockId=nl_player_set
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Set player to $player"
+
+    export function setPlayer(player: string): void  {
+        thePlayer = player
+        setSounds(thePlayer)
+        setMusic(thePlayer)
+    }
+
+    /*
+      * Retrieve the Player
+      */
+    //% blockId=nl_player_get
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Retrieve player"
+    export function getPlayer(){
+        return thePlayer
+    }
+    
+    /*
+      * Get a sound
+      */
+    //% blockId=nl_sound_get
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Fetch sound for $category"
+    export function playSound(category: string) {
+        if (category == "Name") {
+            if (playlistName.length == 0) {
+                playlistName = shuffleList(sbName)
+            }
+            theSound = playlistName.shift()
+        } else if (category == "Ready") {
+            if (playlistReady.length == 0) {
+                playlistReady = shuffleList(sbReady)
+            }
+            theSound = playlistReady.shift()
+        } else if (category == "Yay") {
+            if (playlistYay.length == 0) {
+                playlistYay = shuffleList(sbYay)
+            }
+            theSound = playlistYay.shift()
+        } else if (category == "Nay") {
+            if (playlistNay.length == 0) {
+                playlistNay = shuffleList(sbNay)
+            }
+            theSound = playlistNay.shift()
+        } else if (category == "Ouch") {
+            if (playlistOuch.length == 0) {
+                playlistOuch = shuffleList(sbOuch)
+            }
+            theSound = playlistOuch.shift()
+        } else if (category == "Success") {
+            if (playlistSuccess.length == 0) {
+                playlistSuccess = shuffleList(sbSuccess)
+            }
+            theSound = playlistSuccess.shift()
+        } else if (category == "Failure") {
+            if (playlistFailure.length == 0) {
+                playlistFailure = shuffleList(sbFailure)
+            }
+            theSound = playlistFailure.shift()
+        } else if (category == "Won") {
+            if (playlistWon.length == 0) {
+                playlistWon = shuffleList(sbWon)
+            }
+            theSound = playlistWon.shift()
+        } else if (category == "Lost") {
+            if (playlistLost.length == 0) {
+                playlistLost = shuffleList(sbLost)
+            }
+            theSound = playlistLost.shift()
+        } else if (category == "Hurry") {
+            if (playlistHurry.length == 0) {
+                playlistHurry = shuffleList(sbHurry)
+            }
+            theSound = playlistHurry.shift()
+        } else if (category == "Correct") {
+            if (playlistCorrect.length == 0) {
+                playlistCorrect = shuffleList(sbCorrect)
+            }
+            theSound = playlistCorrect.shift()
+        } else if (category == "Incorrect") {
+            if (playlistIncorrect.length == 0) {
+                playlistIncorrect = shuffleList(sbIncorrect)
+            }
+            theSound = playlistIncorrect.shift()
+        }
+        return theSound
+    }
+
+    /*
+      * Get music
+      */
+    //% blockId=nl_music_get
+    //% subcategory="Audio" group="Audio" color=#EA5532
+    //% weight=101
+    //% block="Fetch music for $genre"
+
+    export function playMusic(genre: string) {
+        if (genre == "Tutorial") {
+            if (playlistTutorial.length == 0) {
+                playlistTutorial = shuffleList(mbTutorial)
+            }
+            theSound = playlistTutorial.shift()
+        } else if (genre == "Intro") {
+            if (playlistIntro.length == 0) {
+                playlistIntro = shuffleList(mbIntro)
+            }
+            theSound = playlistIntro.shift()
+        } else if (genre == "Awaiting") {
+            if (playlistAwaiting.length == 0) {
+                playlistAwaiting = shuffleList(mbAwaiting)
+            }
+            theSound = playlistAwaiting.shift()
+        } else if (genre == "Level") {
+            if (playlistLevel.length == 0) {
+                playlistLevel = shuffleList(mbLevel)
+            }
+            theSound = playlistLevel.shift()
+        } else if (genre == "Won") {
+            if (playlistWonMusic.length == 0) {
+                playlistWonMusic = shuffleList(mbWon)
+            }
+            theSound = playlistWonMusic.shift()
+        } else if (genre == "Lost") {
+            let playlistLostMusic: number[] = []
+            if (playlistLostMusic.length == 0) {
+                playlistLost = shuffleList(mbLost)
+            }
+            theSound = playlistLost.shift()
+        }
+        return theSound
+    }
+
+    function setSounds(player: string) {
+        soundString = playerSoundString(player)
+        sbName = []
+        sbReady = []
+        sbYay = []
+        sbIntro = []
+        sbNay = []
+        sbOuch = []
+        sbSuccess = []
+        sbFailure = []
+        sbWon = []
+        sbLost = []
+        sbHurry = []
+        stringParts = soundString.split("|")
+        for (let value22 of stringParts) {
+            thisLetter = value22.charAt(0)
+            theSound = value22.substr(2, value22.length - 2)
+            if (thisLetter == "A") {
+                sbName.push(theSound)
+            } else if (thisLetter == "R") {
+                sbReady.push(theSound)
+            } else if (thisLetter == "Y") {
+                sbYay.push(theSound)
+            } else if (thisLetter == "I") {
+                sbIntro.push(theSound)
+            } else if (thisLetter == "N") {
+                sbNay.push(theSound)
+            } else if (thisLetter == "O") {
+                sbOuch.push(theSound)
+            } else if (thisLetter == "S") {
+                sbSuccess.push(theSound)
+            } else if (thisLetter == "F") {
+                sbFailure.push(theSound)
+            } else if (thisLetter == "W") {
+                sbWon.push(theSound)
+            } else if (thisLetter == "L") {
+                sbLost.push(theSound)
+            } else if (thisLetter == "H") {
+                sbHurry.push(theSound)
+            }
+        }
+    }
+
+    function setMusic(player: string) {
+        musicString = notLegos.playerMusicString("Mario")
+        mbTutorial = []
+        mbIntro = []
+        sbVoices = []
+        mbAwaiting = []
+        mbLevel = []
+        mbWon = []
+        mbLost = []
+        sbCorrect = []
+        sbIncorrect = []
+        sbDoom = []
+        sbSFX = []
+        stringParts = musicString.split("|")
+        for (let value32 of stringParts) {
+            thisLetter = value32.charAt(0)
+            theSound = value32.substr(2, value32.length - 2)
+            if (thisLetter == "T") {
+                mbTutorial.push(theSound)
+            } else if (thisLetter == "N") {
+                mbIntro.push(theSound)
+            } else if (thisLetter == "V") {
+                sbVoices.push(theSound)
+            } else if (thisLetter == "A") {
+                mbAwaiting.push(theSound)
+            } else if (thisLetter == "E") {
+                mbLevel.push(theSound)
+            } else if (thisLetter == "O") {
+                mbWon.push(theSound)
+            } else if (thisLetter == "L") {
+                mbLost.push(theSound)
+            } else if (thisLetter == "C") {
+                sbCorrect.push(theSound)
+            } else if (thisLetter == "I") {
+                sbIncorrect.push(theSound)
+            } else if (thisLetter == "D") {
+                sbDoom.push(theSound)
+            } else if (thisLetter == "S") {
+                sbSFX.push(theSound)
+            }
+        }
+    }
 
     /*
       * Retrieve the Player's Sound String
@@ -43,7 +370,6 @@ namespace notLegos {
         }
         return musicString
     }
-
 
     
     ///////////////////////////////////////////////////////MP3
@@ -175,8 +501,6 @@ namespace notLegos {
         dataArr[6] = para2
         mp3_checkSum()
         mp3_sendDataFast()
-
-
     }
 
     //% blockId="playLength" 
@@ -575,9 +899,6 @@ namespace notLegos {
         return pin
     }
 
-
-
-
     ///////////////////////////////enum
     export enum DigitalRJPin {
         //% block="J1"
@@ -625,10 +946,6 @@ namespace notLegos {
         //% block="P16"
         P16,
     }
-
-
-
-
     
     export enum AnalogRJPin {
         //% block="J1"
@@ -650,16 +967,4 @@ namespace notLegos {
         Pause = 0x0E
     }
 
-
-
-
 }
-
-
-
-
-
-
-
-
-    
