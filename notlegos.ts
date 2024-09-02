@@ -60,6 +60,8 @@ namespace notLegos {
     let mp3Cvolume = 1
     let lastMP3bit = ""
 
+
+
     /*
     * Retrieve the Player's Music String
     */
@@ -85,109 +87,6 @@ namespace notLegos {
         return musicString
     }
 
-
-
-    //% blockId="playLength" 
-    //% block="playsFor playString:$soundString with volumeFactor:$potReading using pin:$Rjpin"
-    //% soundString.defl="1_1_25_100" thePot.defl=".25"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function playsForLegacy(soundString: string, potReading: number, Rjpin: DigitalRJPin): number {
-        if (lastPort != Rjpin) {
-            let pin = RJpin_to_Serial(Rjpin)
-            serial.redirect(
-                pin,
-                SerialPin.USB_RX,
-                BaudRate.BaudRate9600
-            )
-            lastPort = Rjpin
-        }
-
-        stringParts = soundString.split("_")
-        let theFolder = stringParts[0]
-        let theFile = stringParts[1]
-        let theVolume = stringParts[2]
-        let theLength = stringParts[3]
-        let volumeFactor = Math.round(pins.map(parseFloat(theVolume) * potReading, 0, 100, 0, 30))
-        if (volumeFactor > 30) {
-            volumeFactor = 30
-        }
-
-        CMD = 6
-        para1 = 0
-        para2 = volumeFactor
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-        basic.pause(50)
-
-        CMD = 15
-        para1 = parseInt(theFolder)
-        para2 = parseInt(theFile)
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-
-        return parseFloat(theLength) * 1000 + 800
-    }
-
-    //% blockId="volumePort" 
-    //% block="set MP3 volume:$theVolume usingPin:$Rjpin"
-    //% theVolume.defl="10"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function volumePort(theVolume: string, Rjpin: DigitalRJPin): void {
-        let pin = RJpin_to_Serial(Rjpin)
-        serial.redirect(
-            pin,
-            SerialPin.USB_RX,
-            BaudRate.BaudRate9600
-        )
-        let volume = parseInt(theVolume)
-        if (volume > 30) {
-            volume = 30
-        }
-        CMD = 6
-        para1 = 0
-        para2 = volume
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-        basic.pause(50)
-    }
-
-
-    //% blockId="volumeQuickPort" 
-    //% block="quickly set MP3 volume:$theVolume using Pin:$Rjpin"
-    //% theVolume.defl="10"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function volumeQuickPort(theVolume: string, Rjpin: DigitalRJPin): void {
-        let pin = RJpin_to_Serial(Rjpin)
-        serial.redirect(
-            pin,
-            SerialPin.USB_RX,
-            BaudRate.BaudRate9600
-        )
-        let volume = parseInt(theVolume)
-        if (volume > 30) {
-            volume = 30
-        }
-        CMD = 6
-        para1 = 0
-        para2 = volume
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-    }
 
     /*
       * Get a SFX
@@ -523,104 +422,6 @@ namespace notLegos {
         dataArr[8] = lowByte
     }
 
-    //% blockId="setLoopFolder" block="loop play all the MP3s in the folder:$folderNum"
-    //% folderNum.defl="01"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function setLoopFolder(folderNum: string): void {
-        CMD = 0x17
-        para1 = 0
-        para2 = parseInt(folderNum)
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendData()
-    }
-
-    //% blockId="folderPlay" 
-    //% block="play the mp3 in the folder:$folderNum filename:$fileNum || repeatList: $myAns"
-    //% folderNum.defl="01" fileNum.defl="001"
-    //% myAns.shadow="toggleYesNo"
-    //% expandableArgumentMode="toggle"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function folderPlay(folderNum: string, fileNum: string, myAns: boolean = false): void {
-        CMD = 0x0F
-        para1 = parseInt(folderNum)
-        para2 = parseInt(fileNum)
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendData()
-        if (myAns)
-            execute(0x19)
-    }
-
-    //% blockId="playFolderFilePort" 
-    //% block="play the mp3 in the folder:$folderNum filename:$fileNum usingPin:$Rjpin"
-    //% fileNum.defl="01" folderNum.defl="01"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function playFolderFilePort(folderNum: string, fileNum: string, Rjpin: DigitalRJPin): void {
-        let pin = RJpin_to_Serial(Rjpin)
-
-
-        serial.redirect(
-            pin,
-            SerialPin.USB_RX,
-            BaudRate.BaudRate9600
-        )
-        CMD = 15
-        para1 = parseInt(folderNum)
-        para2 = parseInt(fileNum)
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-    }
-
-    //% blockId="playFolderFileVolumePort" 
-    //% block="play the mp3 in the folder:$folderNum filename:$fileNum with volume:$theVolume usingPin:$Rjpin"
-    //% fileNum.defl="01" theVolume.defl="10" folderNum.defl="01"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function playFolderFileVolumePort(folderNum: string, fileNum: string, theVolume: string, Rjpin: DigitalRJPin): void {
-
-        let pin = RJpin_to_Serial(Rjpin)
-        serial.redirect(
-            pin,
-            SerialPin.USB_RX,
-            BaudRate.BaudRate9600
-        )
-
-        let volume = parseInt(theVolume)
-        if (volume > 25) {
-            volume = 25
-        }
-        CMD = 6
-        para1 = 0
-        para2 = volume
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-        basic.pause(200)
-
-        CMD = 15
-        para1 = parseInt(folderNum)
-        para2 = parseInt(fileNum)
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendDataFast()
-    }
-
-
-
-
     function mp3_sendDataFast(): void {
         let myBuff = pins.createBuffer(10);
         for (let i = 0; i < 10; i++) {
@@ -629,26 +430,6 @@ namespace notLegos {
         serial.writeBuffer(myBuff)
     }
 
-
-    //% blockId="setTracking" 
-    //% block="play the mp3 in order of:%tracking || repeatList: $myAns"
-    //% myAns.shadow="toggleYesNo"
-    //% tracking.defl=1
-    //% expandableArgumentMode="toggle"
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function setTracking(tracking: number, myAns: boolean = false): void {
-        CMD = 0x03
-        para1 = 0x00
-        para2 = tracking
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendData()
-        execute(0x0D)
-        if (myAns)
-            execute(0x19)
-    }
     //% blockId=MP3execute block="Set MP3 execute procedure:%myType"
     //% myType.fieldEditor="gridpicker"
     //% myType.fieldOptions.columns=2
@@ -663,123 +444,7 @@ namespace notLegos {
         mp3_checkSum()
         mp3_sendData()
     }
-    //% blockId="setVolume" block="Set volume(0~25):%volume"
-    //% volume.min=0 volume.max=25
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function setVolume(volume: number): void {
-        if (volume > 25) {
-            volume = 25
-        }
-        CMD = 0x06
-        para1 = 0
-        para2 = volume
-        dataArr[3] = CMD
-        dataArr[5] = para1
-        dataArr[6] = para2
-        mp3_checkSum()
-        mp3_sendData()
-    }
-    //% blockId=MP3setPort block="Set the MP3 port to %Rjpin"
-    //% Rjpin.fieldEditor="gridpicker"
-    //% Rjpin.fieldOptions.columns=2
-    //% subcategory=Excute group="MP3" color=#EA5532
-    export function MP3SetPort(Rjpin: DigitalRJPin): void {
-        let pin = RJpin_to_Serial(Rjpin)
-        serial.redirect(
-            pin,
-            SerialPin.USB_RX,
-            BaudRate.BaudRate9600
-        )
-        setVolume(25)
-    }
-
-    /*
-     * Toggle a Laser (or somesuch)
-     */
-    //% blockId=notlegos_laser_toggle
-    //% subcategory="Laser" group="Laser" color=#EA5532
-    //% weight=100
-    //% block="Laser %Rjpin toggle $laserState with brightness %laserBrightness"
-    //% Rjpin.fieldEditor="gridpicker" 
-    //% Rjpin.fieldOptions.columns=2
-    //% laserBrightness.min=0 laserBrightness.max=1023
-    //% laserState.shadow="toggleOnOff"
-    export function laserToggle(Rjpin: DigitalRJPin, laserState: boolean, laserBrightness: number = 1023): void {
-        let pin = AnalogPin.P1
-        pin = RJpin_to_digital(Rjpin)
-        if (laserState) {
-            pins.analogWritePin(pin, laserBrightness)
-        }
-        else {
-            pins.analogWritePin(pin, 0)
-        }
-    }
-
-    /*
-     * Pulse a Laser (or somesuch)
-     */
-    //% blockId=notlegos_laser_pulse
-    //% subcategory="Laser" group="Laser" color=#EA5532
-    //% weight=99
-    //% block="Laser %Rjpin pulse for %pulseDuration milliseconds with brightness %laserBrightness"
-    //% Rjpin.fieldEditor="gridpicker" 
-    //% Rjpin.fieldOptions.columns=2
-    //% laserBrightness.min=0 begBrightness.max=1023
-    //% pulseDuration.min=100 pulseDuration.max=10000
-    //% inlineInputMode=inline
-    export function laserPulse(Rjpin: DigitalRJPin, pulseDuration: number = 500, laserBrightness: number = 1023): void {
-        let pin = AnalogPin.P1
-        pin = RJpin_to_digital(Rjpin)
-        pins.analogWritePin(pin, laserBrightness)
-        basic.pause(pulseDuration - 3)
-        pins.analogWritePin(pin, 0)
-    }
-
-
-    /*
-     * Fade a Laser (or somesuch)
-     */
-    //% blockId=notlegos_laser_fade
-    //% subcategory="Laser" group="Laser" color=#EA5532
-    //% weight=98
-    //% block="Laser %Rjpin fade over %pulseDuration milliseconds from brightness %begBrightness to brightness %endBrightness"
-    //% Rjpin.fieldEditor="gridpicker" 
-    //% Rjpin.fieldOptions.columns=2
-    //% begBrightness.min=0 begBrightness.max=1023
-    //% endBrightness.min=0 endBrightness.max=1023
-    //% pulseDuration.min=100 pulseDuration.max=10000
-    //% expandableArgumentMode="toggle"
-    //% inlineInputMode=inline
-    export function laserFade(Rjpin: DigitalRJPin, pulseDuration: number = 500, begBrightness: number = 0, endBrightness: number = 1023): void {
-        let pin = AnalogPin.P1
-        pin = RJpin_to_digital(Rjpin)
-        let analogStep = 0
-        let laserLevel = 0
-        let pulseHold = 10
-        let stepCount = Math.floor((pulseDuration - 10) / (pulseHold + 2))
-        if (begBrightness == endBrightness) {
-            laserLevel = begBrightness
-            pins.analogWritePin(pin, laserLevel)
-            basic.pause(pulseDuration)
-        } else if (begBrightness <= endBrightness) {
-            analogStep = (endBrightness - begBrightness) / stepCount
-            laserLevel = begBrightness
-            while (laserLevel <= endBrightness) {
-                pins.analogWritePin(pin, laserLevel)
-                laserLevel = laserLevel + analogStep
-                basic.pause(pulseHold)
-            }
-        } else {
-            analogStep = (begBrightness - endBrightness) / stepCount
-            laserLevel = begBrightness
-            while (laserLevel >= endBrightness) {
-                pins.analogWritePin(pin, laserLevel)
-                laserLevel = laserLevel - analogStep
-                basic.pause(pulseHold)
-            }
-        }
-    }
-
+  
 
     function RJpin_to_analog(Rjpin: AnalogRJPin): any {
         let pin = AnalogPin.P1
