@@ -2215,6 +2215,12 @@ namespace Connected {
             case DigitalRJPin.P16:
                 pin = SerialPin.P16
                 break;
+            case DigitalRJPin.P14:
+                pin = SerialPin.P14
+                break;
+            case DigitalRJPin.P8:
+                pin = SerialPin.P8
+                break;
         }
         serial.redirect(
             pin,
