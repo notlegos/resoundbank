@@ -542,7 +542,7 @@ namespace notLegos {
 
 
     //% blockId="playsFor" 
-    //% block="playsFor playString:$soundString"
+    //% block="Play length:$soundString"
     //% soundString.defl="1_1_25_100"
     //% subcategory=MP3 group="MP3"
     export function playsFor(soundString: string): number {
