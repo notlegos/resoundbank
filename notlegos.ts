@@ -260,11 +260,11 @@ namespace notLegos {
     function sendMP3volume(sPin: SerialPin): void {
         let theVolume = 5
         if (sPin == mp3Apin) {
-            theVolume = potRead() * mp3Avolume
+            theVolume = Math.round(potRead() * mp3Avolume)
         } else if (sPin == mp3Bpin) {
-            theVolume = potRead() * mp3Bvolume
+            theVolume = Math.round(potRead() * mp3Bvolume)
         } else if (sPin == mp3Cpin) {
-            theVolume = potRead() * mp3Cvolume
+            theVolume = Math.round(potRead() * mp3Cvolume)
         }
         serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
         CMD = 6
@@ -288,7 +288,25 @@ namespace notLegos {
         mp3_sendDataFast()
     }
 
-    //% blockId=MP3execute block="Set MP3 execute procedure:%myType"
+    //% blockId=nl_backgroundVolume
+    //% block="Set background volume to:%relativeVolume"
+    //% subcategory="MP3" group="MP3"
+    export function sendBackgroundVolume(relativeVolume: number): void {
+        let sPin = mp3Cpin
+        let theVolume = Math.round(potRead() * mp3Cvolume * relativeVolume / 100)
+        serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
+        CMD = 6
+        para1 = 0
+        para2 = theVolume
+        dataArr[3] = CMD
+        dataArr[5] = para1
+        dataArr[6] = para2
+        mp3_checkSum()
+        mp3_sendDataFast()
+    }
+
+
+    //% blockId=MP3execute2 block="Set MP3 execute procedure:%myType"
     //% myType.fieldEditor="gridpicker"
     //% myType.fieldOptions.columns=2
     //% subcategory=Excute group="MP3" color=#EA5532
