@@ -263,6 +263,8 @@ namespace notLegos {
             theVolume = potRead() * mp3Avolume
         } else if (sPin == mp3Bpin) {
             theVolume = potRead() * mp3Bvolume
+        } else if (sPin == mp3Cpin) {
+            theVolume = potRead() * mp3Cvolume
         }
         serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
         CMD = 6
@@ -339,7 +341,6 @@ namespace notLegos {
         }
     }
 
-
     //% blockId="playFolderFile" 
     //% block="play the mp3 in the folder:$folderNum filename:$fileNum"
     //% fileNum.defl="01" folderNum.defl="01"
@@ -367,11 +368,9 @@ namespace notLegos {
     export function playsFor(soundString: string): number {
         let stringParts: string[] = []
         let sPin = SerialPin.P0
-
         stringParts = soundString.split("_")
         let theFolder = stringParts[0]
         let theFile = stringParts[1]
-        
         if (mp3bits == 1) {
             sPin = mp3Apin
             mp3Avolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
@@ -389,34 +388,59 @@ namespace notLegos {
         let theLength = stringParts[3]
         sendMP3volume(sPin)
         sendMP3play(theFolder, theFile, sPin)
-        return parseFloat(theLength) * 1000
+        return parseFloat(theLength) * 1000 + 20
     }
 
-    //% blockId="playsForBackground" 
+    //% blockId="nl_playsForBackground" 
     //% block="Play in background length:$soundString"
     //% soundString.defl="1_1_25_100"
     //% subcategory=MP3 group="MP3"
     export function playsForBackground(soundString: string): number {
         let stringParts: string[] = []
         let sPin = SerialPin.P0
-
         stringParts = soundString.split("_")
         let theFolder = stringParts[0]
         let theFile = stringParts[1]
-
-        if (lastMP3bit == "A") {
-            sPin = mp3Bpin
-            mp3Bvolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
-            lastMP3bit = "B"
-        } else {
-            sPin = mp3Apin
-            mp3Avolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
-            lastMP3bit = "A"
-        }
         let theLength = stringParts[3]
+        mp3Cvolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
+        sPin = mp3Cpin
         sendMP3volume(sPin)
         sendMP3play(theFolder, theFile, sPin)
-        return parseFloat(theLength) * 1000
+        return parseFloat(theLength) * 1000 + 20
+    }
+
+
+    //% blockId="nl_playBackground" 
+    //% block="Play in background:$soundString"
+    //% soundString.defl="1_1_25_100"
+    //% subcategory=MP3 group="MP3"
+    export function playBackground(soundString: string): void {
+        let stringParts: string[] = []
+        let sPin = SerialPin.P0
+        stringParts = soundString.split("_")
+        let theFolder = stringParts[0]
+        let theFile = stringParts[1]
+        let theLength = stringParts[3]
+        mp3Cvolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
+        sPin = mp3Cpin
+        sendMP3volume(sPin)
+        sendMP3play(theFolder, theFile, sPin)
+    }
+
+
+    //% blockId="nl_backgroundStop" 
+    //% block="Stop background sound"
+    //% subcategory=MP3 group="MP3"
+    export function stopBackgroundSound(): void {
+        serial.redirect(mp3Cpin, SerialPin.USB_RX, BaudRate.BaudRate9600)
+        CMD = 0x16
+        para1 = 0x00
+        para2 = 0x00
+        dataArr[3] = CMD
+        dataArr[5] = para1
+        dataArr[6] = para2
+        mp3_checkSum()
+        mp3_sendData()
     }
 
     // Nezha - Functions for Pins and Ports
