@@ -1000,8 +1000,8 @@ namespace Connected {
         let pinE = DigitalPin.P4
         switch (Rjpin) {
             case DigitalRJPin.J1:
-                pinT = DigitalPin.P1
-                pinE = DigitalPin.P8
+                pinT = DigitalPin.P8
+                pinE = DigitalPin.P9
                 break;
             case DigitalRJPin.J2:
                 pinT = DigitalPin.P2

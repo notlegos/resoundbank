@@ -14,6 +14,7 @@ namespace notLegos {
     let mp3Avolume = 1
     let mp3Bvolume = 1
     let mp3Cvolume = 1
+    let relativeCvolume = 1
     let lastMP3bit = ""
     let Start_Byte = 0x7E
     let Version_Byte = 0xFF
@@ -67,7 +68,7 @@ namespace notLegos {
     let PlaylistYay: string[] = []
 
     // Sound Strings - Global
-    let VoiceTracks = "10_1_90_1.75|10_2_90_3.65|10_3_90_11.5|10_4_90_0|10_5_90_0|10_6_90_4.65|10_7_90_7.15|10_8_90_4.8|10_9_90_3.75|10_10_90_5.05|10_11_90_0|10_12_90_0|10_13_90_3|10_14_90_3|10_15_90_3|10_16_90_4|10_17_90_0|10_18_90_3|10_19_90_3|10_20_90_4|10_21_90_2|10_22_90_0|10_23_90_2|10_24_90_2|10_25_90_6|10_26_90_6|10_27_90_6|10_28_90_6|10_29_90_6|10_30_90_6|10_31_90_6|10_32_90_6|10_33_90_8|10_34_90_9|10_35_90_6|10_36_90_6|10_37_90_6|10_38_90_6|10_39_90_6|10_40_90_6".split("|")
+    let VoiceTracks = "10_1_90_1.75|10_2_90_3.65|10_3_50_11.5|10_4_90_0|10_5_90_0|10_6_90_4.65|10_7_90_7.15|10_8_90_4.8|10_9_90_3.75|10_10_90_5.05|10_11_90_0|10_12_90_0|10_13_90_3|10_14_90_3|10_15_90_3|10_16_90_4|10_17_90_0|10_18_90_3|10_19_90_3|10_20_90_4|10_21_90_2|10_22_90_0|10_23_90_2|10_24_90_2|10_25_90_6|10_26_90_6|10_27_90_6|10_28_90_6|10_29_90_6|10_30_90_6|10_31_90_6|10_32_90_6|10_33_90_8|10_34_90_9|10_35_90_6|10_36_90_6|10_37_90_6|10_38_90_6|10_39_90_6|10_40_90_6".split("|")
     let CorrectSFX = "7_1_100_4|7_2_100_8|7_3_100_8|7_4_100_6|7_5_100_10|7_6_100_8|7_7_100_6|7_8_100_4|7_9_100_17|7_10_100_9|7_11_100_4|7_12_100_8|7_13_100_12|7_14_100_7|7_15_100_10|7_16_100_9|7_17_100_10|7_18_100_9|7_19_100_8|7_20_100_4|7_21_100_7|7_22_100_26|7_23_100_5|7_24_100_4|7_25_100_10|7_26_100_7|7_27_100_7|7_28_100_6|7_29_100_7|7_30_100_7|7_31_100_12|7_32_100_4|7_33_100_6|7_34_100_6|7_35_100_6|7_36_100_6|7_37_100_5|7_38_100_3|7_39_100_6|7_40_100_6|7_41_100_6|7_42_100_8|7_43_100_6|7_44_100_8|7_45_100_6|7_46_100_5|7_47_100_5|7_48_100_12|7_49_100_3|7_50_100_7|7_51_100_8|7_52_100_11|7_53_100_6|7_54_100_2|7_55_100_5|7_56_100_7|7_57_100_8|7_58_100_7|7_59_100_6|7_60_100_7|7_61_100_6|7_62_100_8|7_63_100_5|7_64_100_5|7_65_100_7|7_66_100_9|7_67_100_6|7_68_100_6|7_69_100_7|7_70_100_10|7_71_100_7|7_72_100_5|7_73_100_6|7_74_100_8|7_75_100_3|7_76_100_3|7_77_100_6|7_78_100_7|7_79_100_4|7_80_100_6|7_81_100_2|7_82_100_3|7_83_100_3|7_84_100_1|7_85_100_3|7_86_100_6|7_87_100_7|7_88_100_5|7_89_100_3|7_90_100_5|7_91_100_3|7_92_100_3|7_93_100_2|7_94_100_3|7_95_100_3|7_96_100_1|7_99_100_1|7_100_100_1|7_101_100_1|7_102_100_1|7_103_100_1|7_104_100_3|7_105_100_1|7_106_100_1|7_107_100_4|7_108_100_4|7_109_100_1|7_110_100_1|7_111_100_1|7_112_100_1|7_113_100_1|7_114_100_2|7_115_100_1|7_116_100_1|7_117_100_1|7_118_100_1".split("|")
     let IncorrectSFX = "8_1_100_6|8_2_100_5|8_3_100_3|8_4_100_5|8_5_100_7|8_6_100_6|8_7_100_4|8_8_100_1|8_9_100_3|8_10_100_4|8_11_100_3|8_12_100_3|8_13_100_6|8_14_100_3|8_15_100_1|8_16_100_1|8_17_100_1|8_18_100_1|8_19_100_0|8_20_100_0|8_21_100_5|8_22_100_4|8_23_100_3|8_24_100_7".split("|")
     let AllSFX = "9_1_100_4.754|9_2_100_4.336|9_3_100_5.172|9_4_100_4.806|9_5_100_4.754|9_6_100_1.536|9_7_100_2.136|9_8_100_1.896|9_9_100_2.592|9_10_100_0.936|9_11_100_1.008|9_12_100_0.312|9_13_100_1.44|9_14_100_1.8|9_15_100_1.992|9_16_100_1.104|9_17_100_1.08|9_18_100_0.912|9_19_100_0.528|9_20_100_0.72|9_21_100_0.672|9_22_100_0.696|9_23_100_0.6|9_24_100_0.576|9_25_100_1.44|9_26_100_1.8|9_27_100_1.464|9_28_100_0.432|9_29_100_0.312|9_30_100_2.112|9_31_100_0.648|9_32_100_0.384|9_33_100_2.352|9_34_100_1.8|9_35_100_1.608|9_36_100_0.648|9_37_100_0.768|9_38_100_0.552|9_39_100_0.48|9_40_100_1.032|9_41_100_0.456|9_42_100_0.384|9_43_100_0.552|9_44_100_0.432|9_45_100_0.216|9_46_100_0.624|9_47_100_1.248|9_48_100_1.104|9_49_100_1.248|9_50_100_0.648|9_51_100_0.456|9_53_100_5.256|9_54_100_2.328|9_55_100_4.992|9_56_100_1.776|9_57_100_2.28|9_58_100_0.504|9_59_100_0.984|9_60_100_0.984|9_61_100_0.504|9_62_100_1.632|9_63_100_0.288|9_64_100_0.192|9_65_100_0.168|9_66_100_0.288|9_67_100_0.288|9_68_100_0.312|9_69_100_0.72|9_70_100_0.672|9_71_100_0.648|9_72_100_0.648|9_73_100_1.632|9_74_100_1.416|9_75_100_1.248|9_76_100_0.48|9_77_100_0.36|9_78_100_0.216|9_79_100_0.576|9_80_100_0.731|9_81_100_1.128|9_82_100_2.184|9_83_100_0.744|9_84_100_0.6|9_85_100_1.152|9_86_100_1.68|9_87_100_1.32|9_88_100_0.528|9_89_100_0.36|9_90_100_0.792|9_91_100_2.496|9_92_100_1.8|9_93_100_1.8|9_94_100_0.744|9_95_100_1.776|9_96_100_5.544|9_97_100_0.432|9_98_100_2.064|9_99_100_0.744|9_100_100_0.696|9_101_100_1.776|9_102_100_0.12|9_103_100_0.168|9_104_100_0.96|9_105_100_0.96|9_106_100_2.04|9_107_100_3.984|9_108_100_1.608|9_109_100_3.528|9_110_100_0.456|9_111_100_0.696|9_112_100_1.632|9_113_100_2.232".split("|")
@@ -264,7 +265,7 @@ namespace notLegos {
         } else if (sPin == mp3Bpin) {
             theVolume = Math.round(potRead() * mp3Bvolume)
         } else if (sPin == mp3Cpin) {
-            theVolume = Math.round(potRead() * mp3Cvolume)
+            theVolume = Math.round(potRead() * mp3Cvolume * relativeCvolume)
         }
         serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
         CMD = 6
@@ -275,6 +276,25 @@ namespace notLegos {
         dataArr[6] = para2
         mp3_checkSum()
         mp3_sendData()
+    }
+    function sendMP3volumeFast(sPin: SerialPin): void {
+        let theVolume = 5
+        if (sPin == mp3Apin) {
+            theVolume = Math.round(potRead() * mp3Avolume)
+        } else if (sPin == mp3Bpin) {
+            theVolume = Math.round(potRead() * mp3Bvolume)
+        } else if (sPin == mp3Cpin) {
+            theVolume = Math.round(potRead() * mp3Cvolume * relativeCvolume)
+        }
+        serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
+        CMD = 6
+        para1 = 0
+        para2 = theVolume
+        dataArr[3] = CMD
+        dataArr[5] = para1
+        dataArr[6] = para2
+        mp3_checkSum()
+        mp3_sendDataFast()
     }
     function sendMP3play(folderNum: string, fileNum: string, sPin: SerialPin): void {
         serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
@@ -292,6 +312,8 @@ namespace notLegos {
     //% block="Set background volume to:%relativeVolume"
     //% subcategory="MP3" group="MP3"
     export function sendBackgroundVolume(relativeVolume: number): void {
+        relativeCvolume = relativeVolume/100
+
         let sPin = mp3Cpin
         let theVolume = Math.round(potRead() * mp3Cvolume * relativeVolume / 100)
         serial.redirect(sPin, SerialPin.USB_RX, BaudRate.BaudRate9600)
@@ -323,8 +345,7 @@ namespace notLegos {
   
     //% blockId=notlegos_pot_read
     //% subcategory="MP3" group="MP3"
-    //% block="Trimpot %mbPin analog value"
-    //% mbPin.fieldEditor="gridpicker"
+    //% block="Trimpot analog value"
     export function potRead() {
         if(isPot){
             return Math.round(pins.map(pins.analogReadPin(potPin), 0, 1023, 0, 30))
@@ -333,10 +354,37 @@ namespace notLegos {
         }
     }
 
+    //% blockId=notlegos_relCread
+    //% subcategory="MP3" group="MP3"
+    //% block="Return background volume"
+    export function getBackgroundVolume() {
+
+            return relativeCvolume
+
+    }
+    //% blockId=notlegos_mp3Avolume
+    //% subcategory="MP3" group="MP3"
+    //% block="Return MP3A volume"
+    export function getMP3AVolume() {
+        return potRead() * mp3Avolume
+    }
+    //% blockId=notlegos_mp3Bvolume
+    //% subcategory="MP3" group="MP3"
+    //% block="Return MP3B volume"
+    export function getMP3BVolume() {
+        return potRead() * mp3Bvolume
+    }
+      //% blockId=notlegos_mp3Cvolume
+    //% subcategory="MP3" group="MP3"
+    //% block="Return MP3C volume"
+    export function getMP3CVolume() {
+        return potRead() * mp3Cvolume * relativeCvolume
+    }
+
     //% blockId=notlegos_pot_set
     //% subcategory="MP3" group="MP3"
     //% block="Connect Volume Control Pot at pin %aPin"
-    //% mbPin.fieldEditor="gridpicker"
+    //% aPin.fieldEditor="gridpicker"
     export function potSet(aPin: AnalogPin): void{
         potPin = aPin
         isPot = true
@@ -345,7 +393,7 @@ namespace notLegos {
     //% blockId=notlegos_mp3_ports_set
     //% subcategory="MP3" group="MP3"
     //% block="Connect MP3 bit at pin %dPin"
-    //% mbPin.fieldEditor="gridpicker"
+    //% dPin.fieldEditor="gridpicker"
     export function mp3setPorts(sPin: SerialPin): void {
         if (mp3bits == 0){
             mp3Apin = sPin
@@ -369,13 +417,13 @@ namespace notLegos {
             sendMP3volume(mp3Apin)
         }
         if (mp3bits > 1) {
-            sendMP3volume(mp3Bpin)
+           // sendMP3volume(mp3Bpin)
         }
         if (mp3bits >0) {
             sendMP3play(folderNum, fileNum, mp3Apin)
         }
         if (mp3bits > 1) {
-            sendMP3play(folderNum, fileNum, mp3Bpin)
+          //  sendMP3play(folderNum, fileNum, mp3Bpin)
         }
     }
 
@@ -408,6 +456,49 @@ namespace notLegos {
         sendMP3play(theFolder, theFile, sPin)
         return parseFloat(theLength) * 1000 + 20
     }
+
+    //% blockId=nl_volume_refresh
+    //% subcategory="MP3" group="MP3"
+    //% block="Update volume"
+    export function updateVolume(): void {
+        if (mp3bits > 0) {
+            sendMP3volumeFast(mp3Apin)
+        }
+        if (mp3bits > 1) {
+            sendMP3volumeFast(mp3Bpin)
+        }
+        if (mp3bits > 2) {
+            sendMP3volumeFast(mp3Cpin)
+        }
+    }
+
+
+    //% blockId="nl_playsForTwo" 
+    //% block="Dual play length:$soundString"
+    //% soundString.defl="1_1_25_100"
+    //% subcategory=MP3 group="MP3"
+    export function playsForTwo(soundString: string): number {
+        let stringParts: string[] = []
+        let sPin = SerialPin.P0
+        stringParts = soundString.split("_")
+        let theFolder = stringParts[0]
+        let theFile = stringParts[1]
+        let theLength = stringParts[3]
+
+        mp3Avolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
+        mp3Bvolume = pins.map(parseInt(stringParts[2]), 0, 100, 0, 1)
+
+        sendMP3volumeFast(mp3Apin)
+        sendMP3volumeFast(mp3Bpin)
+        
+        basic.pause(20)
+
+        sendMP3play(theFolder, theFile, mp3Apin)
+        sendMP3play(theFolder, theFile, mp3Bpin)
+        
+        return parseFloat(theLength) * 1000 + 20
+    }
+
 
     //% blockId="nl_playsForBackground" 
     //% block="Play in background length:$soundString"
